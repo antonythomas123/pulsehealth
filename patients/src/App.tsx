@@ -1,12 +1,10 @@
 import React from "react";
-import './index.css';
+import Patients from "./pages/Patients";
+
 type Props = {};
 
 const App = (props: Props) => {
-  return (
-    <div>
-    </div>
-  );
+  return <Patients />;
 };
 
 export default App;

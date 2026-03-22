@@ -5,6 +5,7 @@ import PrivateRouteWithLayout from "./components/PrivateRouteWithLayout";
 type Props = {};
 
 const Dashboard = React.lazy(() => import("dashboard/Dashboard"));
+const Patients = React.lazy(() => import("patients/Patients"));
 
 const AppRoutes = (props: Props) => {
   return (
@@ -15,7 +16,7 @@ const AppRoutes = (props: Props) => {
         <Route element={<PrivateRouteWithLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/analytics" element={<>Analytics</>} />
-          <Route path="/patients" element={<>Patients</>} />
+          <Route path="/patients" element={<Patients />} />
         </Route>
       </Routes>
     </Suspense>
