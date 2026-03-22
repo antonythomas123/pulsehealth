@@ -48,8 +48,8 @@ module.exports = {
       shared: {
         react: { singleton: true },
         "react-dom": { singleton: true },
-        "react-redux": { singleton: true },
-        "@reduxjs/toolkit": { singleton: true },
+        "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
+        "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
       },
     }),
 

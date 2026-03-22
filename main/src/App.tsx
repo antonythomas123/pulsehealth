@@ -1,14 +1,22 @@
 import React from "react";
+import { Provider } from "react-redux";
 import { BrowserRouter } from "react-router-dom";
+import { store } from "./redux/store";
 import AppRoutes from "./Routes";
+import { StoreRegistry } from "./redux/storeRegistry";
+import responsiveUIReducer from "./redux/slices/responsiveUI";
 
-type Props = {};
+// Register the responsiveUI slice
+const storeRegistry = new StoreRegistry();
+storeRegistry.registerModule('responsiveUI', responsiveUIReducer);
 
-const App = (props: Props) => {
+const App = () => {
   return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </Provider>
   );
 };
 

@@ -11,7 +11,7 @@ const Main = (props: Props) => {
   return (
     <div className="flex flex-col h-screen">
       <Navbar />
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden">
         <Sidebar />
         <div className="flex-1 overflow-auto p-4">
           {props.children ? props.children : <Outlet />}

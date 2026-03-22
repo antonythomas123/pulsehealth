@@ -1,6 +1,6 @@
 import React from "react";
 import { MdOutlineArrowForward, MdMoreVert } from "react-icons/md";
-import { Record } from "../types/records.types";
+import type { Record } from "../types/dashboard.types";
 
 type Props = {
   records: Record[];

@@ -41,11 +41,18 @@ module.exports = {
         dashboard: "dashboard@http://localhost:3002/remoteEntry.js",
       },
 
+      exposes: {
+        "./components": "./src/components/index",
+        "./redux/store": "./src/redux/store",
+        "./redux/hooks": "./src/redux/hooks",
+        "./redux/storeRegistry": "./src/redux/storeRegistry",
+      },
+
       shared: {
-        react: { singleton: true, requiredVersion: "^18.0.0" },
+        react: { singleton: true, requiredVersion: "^19.2.4" },
         "react-dom": { singleton: true },
-        "react-redux": { singleton: true },
-        "@reduxjs/toolkit": { singleton: true },
+        "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
+        "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
       },
     }),
 
