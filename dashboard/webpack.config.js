@@ -37,8 +37,12 @@ module.exports = {
       name: "dashboard",
       filename: "remoteEntry.js",
 
+      remotes: {
+        main: "main@http://localhost:3000/remoteEntry.js",
+      },
+
       exposes: {
-        // "./Dashboard": "./src/pages/Dashboard",
+        "./Dashboard": "./src/App.tsx",
       },
 
       shared: {

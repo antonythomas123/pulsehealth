@@ -1,0 +1,28 @@
+{
+    "records": [
+        {
+            "id": 1,
+            "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuB4G3ENWWIFYsGhFXSIw0yLd5RypUmIG2i4o-swvh5E8kfYLWDjDMAJy0jFFp1YaYaD1wERnbL-aae5F8kq85jC54urkWAtP84lGEE0zEO3GdZ7BMf4xq7wLBkBTdLMzlslx9LbqjrrKQFIvi2-g0hrOKz7R1J4NDEftQU4Oipgq-DninymdBavJf3325Uqq9BOlfbYILGFA2OoY7_4TcZR9Du9NsnFmHiu2FoH8RZ-SkwTZOK5eK4Z6zHGtiJ6thzVxdlvoTihxeEx",
+            "name": "Elena Rodriguez",
+            "type": "General Physical",
+            "time": "09:15 AM",
+            "status": "COMPLETED"
+        },
+        {
+            "id": 2,
+            "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuCnc0Kst6MmxAhXF8RZELJPxacjeLnf_OxJiqYNue26BajyEi7qneWP0sJIDRDLS8r9UpJZC4lTXKMz17YCApozHbhB64WaypzvVghlPRhnr9C7xvwR8uhGMLaimpWbVOG5VHoMajIMESgeAUY9jLBTxna7rPGx96HOuuIalz_LOWNXodpub-PkQ0Jd_broCmx9RPXaexXyQ9RMhRTSxrVPe4ETDJnEo7apdtkCrGr91k3ZDJAG5TjoGCq1ZfvxJQyITpqGwFy7EvYL",
+            "name": "Marcus Thorne",
+            "type": "Post-Op Review",
+            "time": "10:30 AM",
+            "status": "SCHEDULED"
+        },
+        {
+            "id": 3,
+            "img": "https://lh3.googleusercontent.com/aida-public/AB6AXuCVYpI5SRCE8KUYp50FfnqsAh_kSjbXkhyjGVZJkyW7VC40Wn6jXj6cPhwgSNItfIzRz2UcImw9TSu-EZrp9SnUgEqDg9_YFuMqOr82r2q5pzVQsh_NrEyvmKJraA1r9XdPIFRETsv4NGX8DaDu7pboq73mC3tgtWjHwXYsr3PpQfTJY_QlCu46CpR5_rlRWQSC9xiyE3V19Ak-yZ5iWmg0L-e8zc0Sr0cL_enw6vImCBPmWinDGyyUqE2IO7XerdW-qZ1o_bwQ4aPj",
+            "name": "Sophia Martinez",
+            "type": "Follow-up Visit",
+            "time": "11:45 AM",
+            "status": "IN_PROGRESS"
+        }
+    ]
+}
