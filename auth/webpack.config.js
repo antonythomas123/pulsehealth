@@ -34,7 +34,7 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "login",
+      name: "auth",
       filename: "remoteEntry.js",
 
       remotes: {

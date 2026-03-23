@@ -38,7 +38,7 @@ module.exports = {
       name: "main",
 
       remotes: {
-        login: "login@http://localhost:3001/remoteEntry.js",
+        auth: "auth@http://localhost:3001/remoteEntry.js",
         dashboard: "dashboard@http://localhost:3002/remoteEntry.js",
         patients: "patients@http://localhost:3003/remoteEntry.js",
       },
