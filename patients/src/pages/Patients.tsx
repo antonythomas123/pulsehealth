@@ -1,9 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  MdFormatListBulleted,
-  MdGridView,
-  MdFilterList,
-} from "react-icons/md";
+import { MdFormatListBulleted, MdGridView, MdFilterList } from "react-icons/md";
 import GridView from "../components/GridView";
 import ListView from "../components/ListView";
 import type { Patient } from "../types/patients.types";
@@ -24,23 +20,32 @@ const Patients = () => {
 
   useEffect(() => {
     const activeBtn = isGridView ? gridBtnRef.current : listBtnRef.current;
+    const activeEl = (isGridView ? gridRef : listRef).current;
+    const container = containerRef.current;
     const listBtn = listBtnRef.current;
-    if (!activeBtn || !pillRef.current || !listBtn) return;
+
+    if (!activeBtn || !pillRef.current || !listBtn || !activeEl || !container)
+      return;
 
     pillRef.current.style.width = `${activeBtn.offsetWidth}px`;
     pillRef.current.style.transform = isGridView
       ? `translateX(${listBtn.offsetWidth}px)`
       : `translateX(0)`;
 
-    const active = isGridView ? gridRef.current : listRef.current;
-    if (containerRef.current && active) {
-      containerRef.current.style.height = `${active.offsetHeight}px`;
-    }
+    const updateHeight = () => {
+      const top = container.getBoundingClientRect().top;
+      container.style.height = `${window.innerHeight - top - 16}px`;
+    };
+
+    updateHeight();
+    const ro = new ResizeObserver(updateHeight);
+    ro.observe(activeEl);
+    return () => ro.disconnect();
   }, [isGridView]);
 
   return (
-    <div>
-      <header className="mb-10 flex flex-col md:flex-row justify-between gap-6 items-start">
+    <div className="flex flex-col h-full">
+      <header className="mb-10 shrink-0 flex flex-col md:flex-row justify-between gap-6 items-start">
         <div>
           <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">
             Patient Directory
@@ -51,6 +56,13 @@ const Patients = () => {
         </div>
 
         <div className="flex gap-4">
+          {!isGridView && (
+            <button className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-sm font-medium hover:bg-surface-container-low transition-colors">
+              <MdFilterList className="text-[18px]" />
+              Filters
+            </button>
+          )}
+
           <div className="bg-surface-container-high p-1.5 rounded-xl flex items-center relative">
             <div
               ref={pillRef}
@@ -79,23 +91,16 @@ const Patients = () => {
               <span className="text-xs font-semibold">Grid</span>
             </button>
           </div>
-
-          {!isGridView && (
-            <button className="flex items-center gap-2 px-4 py-2 bg-surface-container-lowest border border-outline-variant/30 rounded-lg text-sm font-medium hover:bg-surface-container-low transition-colors">
-              <MdFilterList className="text-[18px]" />
-              Filters
-            </button>
-          )}
         </div>
       </header>
 
       <div
         ref={containerRef}
-        className="relative overflow-hidden transition-[height] duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
+        className="relative flex-1 min-h-0 overflow-hidden transition-[height] duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
       >
         <div
           ref={listRef}
-          className="absolute inset-x-0 top-0 transition-transform duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
+          className="absolute inset-x-0 top-0 h-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
           style={{
             transform: isGridView ? "translateX(-100%)" : "translateX(0)",
           }}
@@ -105,7 +110,7 @@ const Patients = () => {
 
         <div
           ref={gridRef}
-          className="absolute inset-x-0 top-0 transition-transform duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
+          className="absolute inset-x-0 top-0 h-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.2,0.64,1)]"
           style={{
             transform: isGridView ? "translateX(0)" : "translateX(100%)",
           }}

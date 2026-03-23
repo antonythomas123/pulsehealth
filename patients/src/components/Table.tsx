@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { Column } from "../types/patients.types";
 import { MdOutlineChevronLeft, MdOutlineChevronRight } from "react-icons/md";
 
@@ -100,6 +100,17 @@ const Table = <T extends Record<string, unknown>>({
   onPageChange,
   pageSiblingCount = 1,
 }: TableProps<T>): React.ReactElement => {
+  const tableScrollRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const el = tableScrollRef.current;
+    if (!el) return;
+    const onScroll = () => setIsScrolled(el.scrollTop > 0);
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
+
   const alignClass = {
     left: "text-left",
     right: "text-right",
@@ -107,10 +118,16 @@ const Table = <T extends Record<string, unknown>>({
   };
 
   return (
-    <div className="bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
-      <div className="overflow-x-auto">
+    <div className="bg-surface-container-lowest rounded-xl shadow-sm flex flex-col h-full overflow-hidden">
+      <div ref={tableScrollRef} className="flex-1 min-h-0 overflow-auto">
         <table className="w-full border-collapse">
-          <thead>
+          <thead
+            className={`sticky top-0 z-10 transition-colors duration-200 ${
+              isScrolled
+                ? "bg-surface-container-low shadow-sm"
+                : "bg-surface-container-low/50"
+            }`}
+          >
             <tr className="bg-surface-container-low/50">
               {columns.map((col) => (
                 <th
@@ -164,7 +181,7 @@ const Table = <T extends Record<string, unknown>>({
         </table>
       </div>
 
-      <div className="px-6 py-4 bg-surface-container-low/20 flex items-center justify-between">
+      <div className="flex-shrink-0 px-6 py-4 bg-surface-container-low/20 flex items-center justify-between border-t border-surface-container">
         <span className="text-xs text-on-surface-variant">
           {totalCount !== undefined
             ? `Showing ${data.length} of ${totalCount.toLocaleString()} records`

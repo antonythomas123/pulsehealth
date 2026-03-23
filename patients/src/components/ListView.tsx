@@ -10,7 +10,9 @@ type Props = {
 
 const ListView = ({ patients }: Props) => {
   const [page, setPage] = React.useState<number>(1);
-  const [totalPages, setTotalPages] = React.useState<number>(Math.ceil(patients.length / 10));
+  const [totalPages, setTotalPages] = React.useState<number>(
+    Math.ceil(patients.length / 10),
+  );
 
   const columns: Column<Patient>[] = [
     {
@@ -57,14 +59,16 @@ const ListView = ({ patients }: Props) => {
   const paginatedPatients = patients.slice(startIndex, endIndex);
 
   return (
-    <Table<Patient>
-      columns={columns}
-      data={paginatedPatients}
-      totalCount={patients?.length}
-      currentPage={page}
-      totalPages={totalPages}
-      onPageChange={setPage}
-    />
+    <div className="h-full flex flex-col">
+      <Table<Patient>
+        columns={columns}
+        data={paginatedPatients}
+        totalCount={patients?.length}
+        currentPage={page}
+        totalPages={totalPages}
+        onPageChange={setPage}
+      />
+    </div>
   );
 };
 
