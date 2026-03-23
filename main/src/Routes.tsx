@@ -4,7 +4,7 @@ import PrivateRouteWithLayout from "./components/PrivateRouteWithLayout";
 import RouteWithLayout from "./components/RouteWithLayout";
 
 
-const Login = React.lazy(() => import("login/Login"));
+const Login = React.lazy(() => import("auth/Login"));
 const Dashboard = React.lazy(() => import("dashboard/Dashboard"));
 const Patients = React.lazy(() => import("patients/Patients"));
 
