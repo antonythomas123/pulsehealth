@@ -111,69 +111,6 @@ const CalendarView = (props: Props) => {
         </div>
       </div>
 
-      {/* <div className="bg-surface-container-lowest p-6 rounded-xl shadow-[0px_12px_32px_rgba(25,18,30,0.04)]">
-        <div className="flex items-center justify-between mb-6">
-          <button className="text-sm text-outline">
-            <MdChevronLeft />
-          </button>
-          <p className="font-headline font-bold text-sm">October 2023</p>
-          <button className="text-sm text-outline">
-            <MdChevronRight />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-7 gap-y-4 text-center mb-6">
-          <span className="font-label text-[10px] text-outline font-bold">
-            M
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            T
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            W
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            T
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            F
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            S
-          </span>
-          <span className="font-label text-[10px] text-outline font-bold">
-            S
-          </span>
-          <span className="text-sm text-outline opacity-30">21</span>
-          <span className="text-sm text-outline opacity-30">22</span>
-          <span className="text-sm font-bold bg-primary text-white w-8 h-8 flex items-center justify-center rounded-full mx-auto">
-            23
-          </span>
-          <span className="text-sm font-medium">24</span>
-          <span className="text-sm font-medium">25</span>
-          <span className="text-sm font-medium">26</span>
-          <span className="text-sm font-medium">27</span>
-        </div>
-        <hr className="border-surface-container-high mb-6" />
-
-        <div className="space-y-4">
-          <h4 className="font-label text-[10px] text-outline font-extrabold uppercase tracking-widest">
-            Next Up
-          </h4>
-          <div className="flex gap-4 border-l-4 border-secondary pl-4 py-1">
-            <div>
-              <p className="text-sm font-bold text-on-surface">12:30 PM</p>
-              <p className="text-xs text-outline">Patient Intake #551</p>
-            </div>
-          </div>
-          <div className="flex gap-4 border-l-4 border-outline-variant pl-4 py-1">
-            <div>
-              <p className="text-sm font-bold text-on-surface">02:00 PM</p>
-              <p className="text-xs text-outline">Lunch Recess</p>
-            </div>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 };

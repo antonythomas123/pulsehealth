@@ -41,7 +41,7 @@ const Dashboard = (props: Props) => {
         </div>
       </header>
 
-      <section className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-10">
+      <section className="grid! grid-cols-1! md:grid-cols-12! gap-6 mb-10">
         <StatusCard
           icon={<MdOutlinePerson />}
           iconType="primary"

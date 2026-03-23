@@ -39,7 +39,7 @@ const StatusCard = ({
         )}
         {label && (
           <span
-            className={`px-2 py-1 text-[10px] font-bold rounded-full uppercase tracking-tighter ${label.toLowerCase() === "urgent" ? "bg-error" : "text-white"}`}
+            className={`px-2 py-1 text-[10px] font-bold rounded-full uppercase tracking-tighter ${label.toLowerCase() === "urgent" ? "bg-error text-white" : ""}`}
           >
             {label}
           </span>

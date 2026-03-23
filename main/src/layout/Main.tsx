@@ -13,7 +13,7 @@ const Main = (props: Props) => {
       <Navbar />
       <div className="flex-1 flex overflow-hidden">
         <Sidebar />
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex-1 overflow-auto p-4 bg-surface font-body text-on-surface antialiased">
           {props.children ? props.children : <Outlet />}
         </div>
       </div>
