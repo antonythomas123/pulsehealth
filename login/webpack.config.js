@@ -1,13 +1,12 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
-const path = require("path");
 
 module.exports = {
   entry: "./src/index.ts",
   mode: "development",
 
   devServer: {
-    port: 3000,
+    port: 3001,
     historyApiFallback: true,
   },
 
@@ -35,23 +34,19 @@ module.exports = {
 
   plugins: [
     new ModuleFederationPlugin({
-      name: "main",
+      name: "login",
+      filename: "remoteEntry.js",
 
       remotes: {
-        login: "login@http://localhost:3001/remoteEntry.js",
-        dashboard: "dashboard@http://localhost:3002/remoteEntry.js",
-        patients: "patients@http://localhost:3003/remoteEntry.js",
+        main: "main@http://localhost:3000/remoteEntry.js",
       },
 
       exposes: {
-        "./components": "./src/components/index",
-        "./redux/store": "./src/redux/store",
-        "./redux/hooks": "./src/redux/hooks",
-        "./redux/storeRegistry": "./src/redux/storeRegistry",
+        "./Login": "./src/App.tsx",
       },
 
       shared: {
-        react: { singleton: true, requiredVersion: "^19.2.4" },
+        react: { singleton: true },
         "react-dom": { singleton: true },
         "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
         "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
