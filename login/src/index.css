@@ -71,13 +71,12 @@
       "opsz" 24;
   }
 
-  .glass-panel {
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px);
+  .signature-gradient {
+    background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%);
   }
 
-  .clinical-gradient {
-    background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%);
+  .brand-bg-solid {
+    background-color: #003d9b;
   }
 }
 

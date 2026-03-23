@@ -7,7 +7,7 @@ type Props = {
 
 const Minimal = (props: Props) => {
   return (
-    <div className='h-screen'>
+    <div className='bg-surface font-body text-on-surface antialiased min-h-screen'>
         {props.children ? props.children : <Outlet />}
     </div>
   )
