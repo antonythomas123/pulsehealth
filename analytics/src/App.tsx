@@ -1,9 +1,12 @@
 import React from "react";
-import './index.css'
 import Analytics from "./pages/Analytics";
 
 const App = () => {
-  return <Analytics />;
+  return (
+    <div>
+      <Analytics />
+    </div>
+  );
 };
 
 export default App;

@@ -3,10 +3,10 @@ import { Routes, Route } from "react-router-dom";
 import PrivateRouteWithLayout from "./components/PrivateRouteWithLayout";
 import RouteWithLayout from "./components/RouteWithLayout";
 
-
 const Login = React.lazy(() => import("auth/Login"));
 const Dashboard = React.lazy(() => import("dashboard/Dashboard"));
 const Patients = React.lazy(() => import("patients/Patients"));
+const Analytics = React.lazy(() => import("analytics/Analytics"));
 
 const AppRoutes = () => {
   return (
@@ -20,7 +20,7 @@ const AppRoutes = () => {
 
         <Route element={<PrivateRouteWithLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/analytics" element={<>Analytics</>} />
+          <Route path="/analytics" element={<Analytics />} />
           <Route path="/patients" element={<Patients />} />
         </Route>
       </Routes>
