@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Filters from "../components/Filters";
 import type {
+  DiagnosisData,
   FiltersState,
   LineData,
   Metric,
@@ -9,6 +10,7 @@ import type {
 import LineCard from "../components/LineCard";
 import vitals from "../data/vitals.json";
 import PieCard from "../components/PieCard";
+import MedicalAdherence from "../components/MedicalAdherence";
 
 const DEPARTMENT_COLORS = [
   "#1a3a6e",
@@ -16,6 +18,17 @@ const DEPARTMENT_COLORS = [
   "#22c55e",
   "#f59e0b",
   "#ef4444",
+];
+
+const DIAGNOSIS_COLORS = [
+  "#1a3a6e",
+  "#0ea5e9",
+  "#0d9488",
+  "#22c55e",
+  "#f59e0b",
+  "#ef4444",
+  "#8b5cf6",
+  "#f97316",
 ];
 
 const METRIC_META: Record<MetricKey, Omit<Metric, "key">> = {
@@ -69,11 +82,29 @@ const Analytics = () => {
     color: DEPARTMENT_COLORS[index % DEPARTMENT_COLORS.length],
   }));
 
+  const diagnosisData: DiagnosisData[] = Object.entries(
+    vitalsData.reduce<Record<string, number>>((counts, entry) => {
+      counts[entry.diagnosis] = (counts[entry.diagnosis] || 0) + 1;
+      return counts;
+    }, {}),
+  )
+    .map(([name, count], index) => ({
+      name,
+      count,
+      percentage: Math.round((count / vitalsData.length) * 100),
+      color: DIAGNOSIS_COLORS[index % DIAGNOSIS_COLORS.length],
+    }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, 4);
+
   const metrics: Metric[] = vitalsData.length
     ? (Object.keys(vitalsData[0]) as Array<keyof (typeof vitalsData)[number]>)
         .filter(
           (key): key is MetricKey =>
-            key !== "id" && key !== "time" && key !== "department",
+            key !== "id" &&
+            key !== "time" &&
+            key !== "department" &&
+            key !== "diagnosis",
         )
         .map((key) => ({
           key,
@@ -106,6 +137,8 @@ const Analytics = () => {
           totalPatients={vitalsData.length}
           data={departmentData}
         />
+
+        <MedicalAdherence data={diagnosisData} />
       </div>
     </div>
   );

@@ -12,9 +12,13 @@ export interface LineData {
   bpDia: number;
   spo2: number;
   department: string;
+  diagnosis: string;
 }
 
-export type MetricKey = keyof Omit<LineData, "id" | "time" | "department">;
+export type MetricKey = keyof Omit<
+  LineData,
+  "id" | "time" | "department" | "diagnosis"
+>;
 
 export interface Metric {
   key: MetricKey;
@@ -23,4 +27,11 @@ export interface Metric {
   color: string;
   normalMin: number;
   normalMax: number;
+}
+
+export interface DiagnosisData {
+  name: string;
+  count: number;
+  percentage: number;
+  color: string;
 }
