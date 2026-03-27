@@ -136,7 +136,7 @@ const Analytics = () => {
           data={departmentData}
         />
 
-        <MedicalAdherence data={diagnosisData} />
+        <MedicalAdherence data={diagnosisData} reportRows={filteredVitalsData} />
       </div>
     </div>
   );
