@@ -1,88 +1,112 @@
 {
   "vitals": [
     {
+      "id": "PH-9021",
       "time": "00:00",
       "heartRate": 68,
       "bpSys": 118,
       "bpDia": 76,
-      "spo2": 98
+      "spo2": 98,
+      "department": "General Med"
     },
     {
+      "id": "PH-8812",
       "time": "02:00",
       "heartRate": 64,
       "bpSys": 112,
       "bpDia": 72,
-      "spo2": 97
+      "spo2": 97,
+      "department": "General Med"
     },
     {
+      "id": "PH-7721",
       "time": "04:00",
       "heartRate": 61,
       "bpSys": 108,
       "bpDia": 70,
-      "spo2": 98
+      "spo2": 98,
+      "department": "General Med"
     },
     {
+      "id": "PH-4592",
       "time": "06:00",
       "heartRate": 66,
       "bpSys": 115,
       "bpDia": 74,
-      "spo2": 99
+      "spo2": 99,
+      "department": "General Med"
     },
     {
+      "id": "PH-9025",
       "time": "08:00",
       "heartRate": 74,
       "bpSys": 122,
       "bpDia": 80,
-      "spo2": 98
+      "spo2": 98,
+      "department": "Critical Care"
     },
     {
+      "id": "PH-8382",
       "time": "10:00",
       "heartRate": 82,
       "bpSys": 130,
       "bpDia": 84,
-      "spo2": 97
+      "spo2": 97,
+      "department": "Emergency"
     },
     {
+      "id": "PH-3661",
       "time": "12:00",
       "heartRate": 88,
       "bpSys": 135,
       "bpDia": 88,
-      "spo2": 96
+      "spo2": 96,
+      "department": "Emergency"
     },
     {
+      "id": "PH-99377",
       "time": "14:00",
       "heartRate": 85,
       "bpSys": 128,
       "bpDia": 82,
-      "spo2": 97
+      "spo2": 97,
+      "department": "Emergency"
     },
     {
+      "id": "PH-2387",
       "time": "16:00",
       "heartRate": 79,
       "bpSys": 124,
       "bpDia": 80,
-      "spo2": 98
+      "spo2": 98,
+      "department": "Critical Care"
     },
     {
+      "id": "PH-2366",
       "time": "18:00",
       "heartRate": 76,
       "bpSys": 120,
       "bpDia": 78,
-      "spo2": 98
+      "spo2": 98,
+      "department": "Critical Care"
     },
     {
+      "id": "PH-6541",
       "time": "20:00",
       "heartRate": 72,
       "bpSys": 117,
       "bpDia": 76,
-      "spo2": 99
+      "spo2": 99,
+      "department": "Critical Care"
     },
     {
+      "id": "PH-9289",
       "time": "22:00",
       "heartRate": 69,
       "bpSys": 114,
       "bpDia": 74,
-      "spo2": 98
+      "spo2": 98,
+      "department": "General Med"
     }
   ]
 }

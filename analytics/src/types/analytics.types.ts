@@ -5,14 +5,16 @@ export interface FiltersState {
 }
 
 export interface LineData {
+  id: string;
   time: string;
   heartRate: number;
   bpSys: number;
   bpDia: number;
   spo2: number;
+  department: string;
 }
 
-export type MetricKey = keyof Omit<LineData, "time">;
+export type MetricKey = keyof Omit<LineData, "id" | "time" | "department">;
 
 export interface Metric {
   key: MetricKey;

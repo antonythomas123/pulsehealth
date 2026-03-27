@@ -1,8 +1,22 @@
 import React, { useState } from "react";
 import Filters from "../components/Filters";
-import type { FiltersState, LineData, Metric, MetricKey } from "../types/analytics.types";
+import type {
+  FiltersState,
+  LineData,
+  Metric,
+  MetricKey,
+} from "../types/analytics.types";
 import LineCard from "../components/LineCard";
 import vitals from "../data/vitals.json";
+import PieCard from "../components/PieCard";
+
+const DEPARTMENT_COLORS = [
+  "#1a3a6e",
+  "#0ea5e9",
+  "#22c55e",
+  "#f59e0b",
+  "#ef4444",
+];
 
 const METRIC_META: Record<MetricKey, Omit<Metric, "key">> = {
   heartRate: {
@@ -44,9 +58,23 @@ const Analytics = () => {
 
   const vitalsData: LineData[] = vitals?.vitals || [];
 
+  const departmentData = Object.entries(
+    vitalsData.reduce<Record<string, number>>((counts, entry) => {
+      counts[entry.department] = (counts[entry.department] || 0) + 1;
+      return counts;
+    }, {}),
+  ).map(([name, value], index) => ({
+    name,
+    value,
+    color: DEPARTMENT_COLORS[index % DEPARTMENT_COLORS.length],
+  }));
+
   const metrics: Metric[] = vitalsData.length
     ? (Object.keys(vitalsData[0]) as Array<keyof (typeof vitalsData)[number]>)
-        .filter((key): key is MetricKey => key !== "time")
+        .filter(
+          (key): key is MetricKey =>
+            key !== "id" && key !== "time" && key !== "department",
+        )
         .map((key) => ({
           key,
           ...METRIC_META[key],
@@ -71,7 +99,13 @@ const Analytics = () => {
           data={vitalsData}
         />
 
-       
+        <PieCard
+          title="Department Distribution"
+          totalCount={String(vitalsData.length)}
+          placeholder="TOTAL PATIENTS"
+          totalPatients={vitalsData.length}
+          data={departmentData}
+        />
       </div>
     </div>
   );
