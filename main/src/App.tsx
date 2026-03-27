@@ -6,9 +6,8 @@ import AppRoutes from "./Routes";
 import { StoreRegistry } from "./redux/storeRegistry";
 import responsiveUIReducer from "./redux/slices/responsiveUI";
 
-// Register the responsiveUI slice
 const storeRegistry = new StoreRegistry();
-storeRegistry.registerModule('responsiveUI', responsiveUIReducer);
+storeRegistry.registerModule("responsiveUI", responsiveUIReducer);
 
 const App = () => {
   return (

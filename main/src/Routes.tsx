@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import PrivateRouteWithLayout from "./components/PrivateRouteWithLayout";
 import RouteWithLayout from "./components/RouteWithLayout";
+import { Loader } from "./components";
 
 const Login = React.lazy(() => import("auth/Login"));
 const Dashboard = React.lazy(() => import("dashboard/Dashboard"));
@@ -10,7 +11,7 @@ const Analytics = React.lazy(() => import("analytics/Analytics"));
 
 const AppRoutes = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loader fullScreen />}>
       <Routes>
         <Route path="/" element={<></>} />
 
