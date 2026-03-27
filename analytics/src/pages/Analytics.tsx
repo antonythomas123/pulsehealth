@@ -1,11 +1,80 @@
-import React from 'react'
+import React, { useState } from "react";
+import Filters from "../components/Filters";
+import type { FiltersState, LineData, Metric, MetricKey } from "../types/analytics.types";
+import LineCard from "../components/LineCard";
+import vitals from "../data/vitals.json";
 
-type Props = {}
+const METRIC_META: Record<MetricKey, Omit<Metric, "key">> = {
+  heartRate: {
+    label: "Heart Rate",
+    unit: "bpm",
+    color: "#1a3a6e",
+    normalMin: 60,
+    normalMax: 100,
+  },
+  bpSys: {
+    label: "BP (Sys)",
+    unit: "mmHg",
+    color: "#38bdf8",
+    normalMin: 90,
+    normalMax: 130,
+  },
+  bpDia: {
+    label: "BP (Dia)",
+    unit: "mmHg",
+    color: "#0ea5e9",
+    normalMin: 60,
+    normalMax: 85,
+  },
+  spo2: {
+    label: "SpO2",
+    unit: "%",
+    color: "#0d9488",
+    normalMin: 95,
+    normalMax: 100,
+  },
+};
 
-const Analytics = (props: Props) => {
+const Analytics = () => {
+  const [filters, setFilters] = useState<FiltersState>({
+    date_range: "30",
+    department: "ALL",
+    group: "",
+  });
+
+  const vitalsData: LineData[] = vitals?.vitals || [];
+
+  const metrics: Metric[] = vitalsData.length
+    ? (Object.keys(vitalsData[0]) as Array<keyof (typeof vitalsData)[number]>)
+        .filter((key): key is MetricKey => key !== "time")
+        .map((key) => ({
+          key,
+          ...METRIC_META[key],
+        }))
+    : [];
+
   return (
-    <div>Analytics</div>
-  )
-}
+    <div>
+      <header className="mb-10">
+        <h1 className="font-headline text-2xl font-extrabold tracking-tight text-on-surface">
+          Population Health Analytics
+        </h1>
+      </header>
 
-export default Analytics
+      <Filters filters={filters} setFilters={setFilters} />
+
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        <LineCard
+          title="Patient Vitals Trends"
+          subtitle=" Mean Heart Rate & Blood Pressure across cohort"
+          metrics={metrics}
+          data={vitalsData}
+        />
+
+       
+      </div>
+    </div>
+  );
+};
+
+export default Analytics;
