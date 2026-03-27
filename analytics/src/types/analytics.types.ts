@@ -1,7 +1,7 @@
 export interface FiltersState {
-  date_range: string;
+  timeRange: string;
   department: string;
-  group: string;
+  diagnosis: string;
 }
 
 export interface LineData {

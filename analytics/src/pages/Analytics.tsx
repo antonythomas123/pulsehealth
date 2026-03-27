@@ -11,68 +11,59 @@ import LineCard from "../components/LineCard";
 import vitals from "../data/vitals.json";
 import PieCard from "../components/PieCard";
 import MedicalAdherence from "../components/MedicalAdherence";
-
-const DEPARTMENT_COLORS = [
-  "#1a3a6e",
-  "#0ea5e9",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-];
-
-const DIAGNOSIS_COLORS = [
-  "#1a3a6e",
-  "#0ea5e9",
-  "#0d9488",
-  "#22c55e",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#f97316",
-];
-
-const METRIC_META: Record<MetricKey, Omit<Metric, "key">> = {
-  heartRate: {
-    label: "Heart Rate",
-    unit: "bpm",
-    color: "#1a3a6e",
-    normalMin: 60,
-    normalMax: 100,
-  },
-  bpSys: {
-    label: "BP (Sys)",
-    unit: "mmHg",
-    color: "#38bdf8",
-    normalMin: 90,
-    normalMax: 130,
-  },
-  bpDia: {
-    label: "BP (Dia)",
-    unit: "mmHg",
-    color: "#0ea5e9",
-    normalMin: 60,
-    normalMax: 85,
-  },
-  spo2: {
-    label: "SpO2",
-    unit: "%",
-    color: "#0d9488",
-    normalMin: 95,
-    normalMax: 100,
-  },
-};
+import { DEPARTMENT_COLORS, DIAGNOSIS_COLORS, METRIC_META } from "../constants";
 
 const Analytics = () => {
   const [filters, setFilters] = useState<FiltersState>({
-    date_range: "30",
+    timeRange: "ALL",
     department: "ALL",
-    group: "",
+    diagnosis: "ALL",
   });
 
   const vitalsData: LineData[] = vitals?.vitals || [];
 
+  const departmentOptions = [
+    { label: "All Departments", value: "ALL" },
+    ...Array.from(new Set(vitalsData.map((entry) => entry.department))).map(
+      (department) => ({
+        label: department,
+        value: department,
+      }),
+    ),
+  ];
+
+  const diagnosisOptions = [
+    { label: "All Diagnoses", value: "ALL" },
+    ...Array.from(new Set(vitalsData.map((entry) => entry.diagnosis))).map(
+      (diagnosis) => ({
+        label: diagnosis,
+        value: diagnosis,
+      }),
+    ),
+  ];
+
+  const filteredVitalsData = vitalsData.filter((entry, index, dataset) => {
+    const matchesDepartment =
+      filters.department === "ALL" || entry.department === filters.department;
+    const matchesDiagnosis =
+      filters.diagnosis === "ALL" || entry.diagnosis === filters.diagnosis;
+
+    if (!matchesDepartment || !matchesDiagnosis) {
+      return false;
+    }
+
+    if (filters.timeRange === "ALL") {
+      return true;
+    }
+
+    const hoursToInclude = Number(filters.timeRange);
+    const startIndex = Math.max(dataset.length - hoursToInclude / 2, 0);
+
+    return index >= startIndex;
+  });
+
   const departmentData = Object.entries(
-    vitalsData.reduce<Record<string, number>>((counts, entry) => {
+    filteredVitalsData.reduce<Record<string, number>>((counts, entry) => {
       counts[entry.department] = (counts[entry.department] || 0) + 1;
       return counts;
     }, {}),
@@ -83,7 +74,7 @@ const Analytics = () => {
   }));
 
   const diagnosisData: DiagnosisData[] = Object.entries(
-    vitalsData.reduce<Record<string, number>>((counts, entry) => {
+    filteredVitalsData.reduce<Record<string, number>>((counts, entry) => {
       counts[entry.diagnosis] = (counts[entry.diagnosis] || 0) + 1;
       return counts;
     }, {}),
@@ -91,14 +82,16 @@ const Analytics = () => {
     .map(([name, count], index) => ({
       name,
       count,
-      percentage: Math.round((count / vitalsData.length) * 100),
+      percentage: Math.round((count / filteredVitalsData.length) * 100),
       color: DIAGNOSIS_COLORS[index % DIAGNOSIS_COLORS.length],
     }))
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
     .slice(0, 4);
 
-  const metrics: Metric[] = vitalsData.length
-    ? (Object.keys(vitalsData[0]) as Array<keyof (typeof vitalsData)[number]>)
+  const metrics: Metric[] = filteredVitalsData.length
+    ? (Object.keys(filteredVitalsData[0]) as Array<
+        keyof (typeof filteredVitalsData)[number]
+      >)
         .filter(
           (key): key is MetricKey =>
             key !== "id" &&
@@ -120,21 +113,26 @@ const Analytics = () => {
         </h1>
       </header>
 
-      <Filters filters={filters} setFilters={setFilters} />
+      <Filters
+        filters={filters}
+        setFilters={setFilters}
+        departmentOptions={departmentOptions}
+        diagnosisOptions={diagnosisOptions}
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         <LineCard
           title="Patient Vitals Trends"
           subtitle=" Mean Heart Rate & Blood Pressure across cohort"
           metrics={metrics}
-          data={vitalsData}
+          data={filteredVitalsData}
         />
 
         <PieCard
           title="Department Distribution"
-          totalCount={String(vitalsData.length)}
+          totalCount={String(filteredVitalsData.length)}
           placeholder="TOTAL PATIENTS"
-          totalPatients={vitalsData.length}
+          totalPatients={filteredVitalsData.length}
           data={departmentData}
         />
 

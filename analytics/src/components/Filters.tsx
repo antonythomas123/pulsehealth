@@ -3,44 +3,43 @@ import { MdCalendarMonth, MdApartment, MdNotes } from "react-icons/md";
 import { Select } from "main/components";
 import type { FiltersState } from "../types/analytics.types";
 
-const DATE_RANGE_OPTIONS = [
-  { label: "Last 30 Days", value: "30" },
-  { label: "Last 90 Days", value: "90" },
-  { label: "Current Year", value: "CURRENT_YEAR" },
+const TIME_RANGE_OPTIONS = [
+  { label: "Full Day", value: "ALL" },
+  { label: "Last 12 Hours", value: "12" },
+  { label: "Last 6 Hours", value: "6" },
 ];
 
-const departments = [
-  { label: "All Departments", value: "ALL" },
-  { label: "Cardiology", value: "CARDIOLOGY" },
-  { label: "Neurology", value: "NEUROLOGY" },
-  { label: "Oncology", value: "ONCOLOGY" },
-];
-
-const groups = [
-  { label: "Chronic Care", value: "CHRONIC_CARE" },
-  { label: "Post-Operative", value: "POST_OPERATIVE" },
-  { label: "Outpatient", value: "OUTPATIENT" },
-];
+type FilterOption = {
+  label: string;
+  value: string;
+};
 
 type Props = {
   filters: FiltersState;
   setFilters: React.Dispatch<React.SetStateAction<FiltersState>>;
+  departmentOptions: FilterOption[];
+  diagnosisOptions: FilterOption[];
 };
 
-const Filters = ({ filters, setFilters }: Props) => {
+const Filters = ({
+  filters,
+  setFilters,
+  departmentOptions,
+  diagnosisOptions,
+}: Props) => {
   return (
     <section className="bg-surface-container-low p-4 rounded-xl mb-8 flex flex-wrap items-center gap-4">
       <div className="flex flex-col gap-1 min-w-[180px]">
         <Select
-          label="DATE RANGE"
-          value={filters?.date_range || ""}
+          label="TIME RANGE"
+          value={filters.timeRange}
           onChange={(value: string) =>
-            setFilters((prev: FiltersState) => ({
+            setFilters((prev) => ({
               ...prev,
-              date_range: value,
+              timeRange: value,
             }))
           }
-          options={DATE_RANGE_OPTIONS}
+          options={TIME_RANGE_OPTIONS}
           icon={<MdCalendarMonth />}
         />
       </div>
@@ -48,34 +47,44 @@ const Filters = ({ filters, setFilters }: Props) => {
       <div className="flex flex-col gap-1 min-w-[180px]">
         <Select
           label="DEPARTMENT"
-          value={filters?.department}
+          value={filters.department}
           onChange={(value: string) =>
-            setFilters((prev: FiltersState) => ({
+            setFilters((prev) => ({
               ...prev,
               department: value,
             }))
           }
-          options={departments}
+          options={departmentOptions}
           icon={<MdApartment />}
         />
       </div>
       <div className="flex flex-col gap-1 min-w-[180px]">
         <Select
-          label="PATIENT GROUP"
-          value={filters?.group}
+          label="DIAGNOSIS"
+          value={filters.diagnosis}
           onChange={(value: string) =>
-            setFilters((prev: FiltersState) => ({
+            setFilters((prev) => ({
               ...prev,
-              group: value,
+              diagnosis: value,
             }))
           }
-          placeholder="PATIENT GROUP"
-          options={groups}
+          placeholder="DIAGNOSIS"
+          options={diagnosisOptions}
           icon={<MdNotes />}
         />
       </div>
-      <button className="mt-5 ml-auto px-6 py-2.5 bg-secondary text-white rounded-lg font-bold text-sm shadow-sm hover:opacity-90 transition-opacity">
-        Apply Filters
+      <button
+        className="mt-5 ml-auto px-6 py-2.5 bg-secondary text-white rounded-lg font-bold text-sm shadow-sm hover:opacity-90 transition-opacity"
+        onClick={() =>
+          setFilters({
+            timeRange: "ALL",
+            department: "ALL",
+            diagnosis: "ALL",
+          })
+        }
+        type="button"
+      >
+        Clear Filters
       </button>
     </section>
   );
