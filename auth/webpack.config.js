@@ -42,13 +42,15 @@ module.exports = {
       },
 
       exposes: {
-        "./Login": "./src/App.tsx",
+        "./Login": "./src/pages/Login.tsx",
+        "./Register": "./src/pages/Register.tsx",
       },
 
       shared: {
         react: { singleton: true },
         "react-dom": { singleton: true },
         "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
+        "react-router-dom": { singleton: true, requiredVersion: "^7.13.1" },
         "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
       },
     }),
