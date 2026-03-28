@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -36,6 +37,7 @@ module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: "main",
+      filename: "remoteEntry.js",
 
       remotes: {
         auth: "auth@http://localhost:3001/remoteEntry.js",
@@ -55,6 +57,7 @@ module.exports = {
         react: { singleton: true, requiredVersion: "^19.2.4" },
         "react-dom": { singleton: true },
         "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
+        "react-router-dom": { singleton: true, requiredVersion: "^7.13.1" },
         "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
       },
     }),
@@ -62,5 +65,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
+
+    new Dotenv(),
   ],
 };

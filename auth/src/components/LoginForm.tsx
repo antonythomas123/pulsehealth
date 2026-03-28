@@ -7,13 +7,43 @@ import {
   MdOutlineVisibility,
   MdOutlineVisibilityOff,
 } from "react-icons/md";
-import { TextField } from "main/components";
+import { TextField, Button } from "main/components";
+import { useAppDispatch, useAppSelector } from "main/redux/hooks";
+import {
+  clearAuthError,
+  selectAuthError,
+  selectAuthLoading,
+  signInWithEmail,
+} from "../redux/slices/auth";
+import { Link } from "react-router-dom";
 
 type Props = {};
 
 const LoginForm = (props: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [isInvalid, setIsInvalid] = useState<boolean>(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const dispatch = useAppDispatch();
+  const authError = useAppSelector(selectAuthError);
+  const isLoading = useAppSelector(selectAuthLoading);
+  const isInvalid = Boolean(authError);
+
+  const clearErrorIfNeeded = () => {
+    if (authError) {
+      dispatch(clearAuthError());
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    await dispatch(
+      signInWithEmail({
+        email: email.trim(),
+        password,
+      }),
+    );
+  };
 
   return (
     <section className="w-full lg:w-[45%] bg-white flex items-center justify-center p-6 sm:p-12 lg:p-24 overflow-y-auto">
@@ -40,17 +70,26 @@ const LoginForm = (props: Props) => {
             <MdOutlineError className="text-red-600 text-[20px] font-bold" />
 
             <span className="text-red-700 text-xs font-bold font-headline uppercase tracking-wider">
-              Invalid credentials
+              {authError}
             </span>
           </div>
         )}
 
-        <form className="w-full space-y-6" id="login_form">
+        <form
+          className="w-full space-y-6"
+          id="login_form"
+          onSubmit={handleSubmit}
+        >
           <TextField
             label="Email"
             placeholder="johndoe@gmail.com"
-            type="text"
+            type="email"
             startIcon={<MdEmail className="text-[20px]" />}
+            value={email}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              clearErrorIfNeeded();
+              setEmail(event.target.value);
+            }}
           />
 
           <div className="flex flex-col gap-2">
@@ -66,7 +105,14 @@ const LoginForm = (props: Props) => {
                   <MdOutlineVisibility className="text-[20px]" />
                 )
               }
-              endIconClick={() => setIsPasswordVisible((prev) => !prev)}
+              endIconClick={() =>
+                setIsPasswordVisible((prev: boolean) => !prev)
+              }
+              value={password}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                clearErrorIfNeeded();
+                setPassword(event.target.value);
+              }}
             />
             <a
               className="text-primary text-end text-[11px] font-bold font-headline uppercase tracking-wider hover:text-primary-container transition-colors"
@@ -76,21 +122,25 @@ const LoginForm = (props: Props) => {
             </a>
           </div>
 
-          <button
-            className="w-full signature-gradient text-on-primary py-4 rounded-xl font-headline font-bold text-sm tracking-wide shadow-xl shadow-primary/25 hover:shadow-primary/35 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 mt-2"
+          <Button
+            fullWidth
             type="submit"
             form="login_form"
+            disabled={!email || !password}
           >
-            Sign In
-          </button>
+            {isLoading ? "Signing In..." : "Sign In"}
+          </Button>
         </form>
 
         <footer className="pt-6 border-t border-surface-variant/50 w-full text-center">
           <p className="text-on-surface-variant/70 text-xs font-medium">
             New to PulseHealth?
-            <a className="text-primary font-bold hover:underline ml-1" href="#">
+            <Link
+              className="text-primary font-bold hover:underline ml-1"
+              to={"/register"}
+            >
               Create account
-            </a>
+            </Link>
           </p>
         </footer>
       </div>

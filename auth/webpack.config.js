@@ -1,5 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { ModuleFederationPlugin } = require("webpack").container;
+const Dotenv = require("dotenv-webpack");
 
 module.exports = {
   entry: "./src/index.ts",
@@ -44,6 +45,7 @@ module.exports = {
       exposes: {
         "./Login": "./src/pages/Login.tsx",
         "./Register": "./src/pages/Register.tsx",
+        "./redux/auth": "./src/redux/slices/auth",
       },
 
       shared: {
@@ -58,5 +60,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
+
+    new Dotenv(),
   ],
 };

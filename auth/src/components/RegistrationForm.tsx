@@ -3,12 +3,20 @@ import {
   MdEmail,
   MdLock,
   MdHealthAndSafety,
+  MdOutlineError,
   MdOutlinePerson,
   MdOutlineVisibilityOff,
   MdOutlineVisibility,
 } from "react-icons/md";
-import { TextField, Select } from "main/components";
+import { TextField, Select, Button } from "main/components";
+import { useAppDispatch, useAppSelector } from "main/redux/hooks";
 import { Link } from "react-router-dom";
+import {
+  clearAuthError,
+  registerWithEmail,
+  selectAuthError,
+  selectAuthLoading,
+} from "../redux/slices/auth";
 
 type Props = {};
 
@@ -25,6 +33,70 @@ const RegistrationForm = (props: Props) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [isConfirmPassVisible, setIsConfirmPassVisible] =
     useState<boolean>(false);
+  const [localError, setLocalError] = useState<string | null>(null);
+  const [fields, setFields] = useState({
+    fullName: "",
+    email: "",
+    specialization: "",
+    password: "",
+    confirmPass: "",
+  });
+  const dispatch = useAppDispatch();
+  const authError = useAppSelector(selectAuthError);
+  const isLoading = useAppSelector(selectAuthLoading);
+  const formError = localError ?? authError;
+  const isInvalid = Boolean(formError);
+
+  const clearErrorIfNeeded = () => {
+    if (localError) {
+      setLocalError(null);
+    }
+
+    if (authError) {
+      dispatch(clearAuthError());
+    }
+  };
+
+  const updateField =
+    (field: keyof typeof fields) =>
+    (eventOrValue: React.ChangeEvent<HTMLInputElement> | string) => {
+      clearErrorIfNeeded();
+
+      const value =
+        typeof eventOrValue === "string"
+          ? eventOrValue
+          : eventOrValue.target.value;
+
+      setFields((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const normalizedFullName = fields.fullName.trim();
+    const normalizedEmail = fields.email.trim();
+
+    if (fields.password !== fields.confirmPass) {
+      setLocalError("Passwords do not match.");
+      return;
+    }
+
+    if (fields.password.length < 6) {
+      setLocalError("Password should be at least 6 characters.");
+      return;
+    }
+
+    await dispatch(
+      registerWithEmail({
+        fullName: normalizedFullName,
+        email: normalizedEmail,
+        password: fields.password,
+      }),
+    );
+  };
 
   return (
     <section className="relative z-20 flex-1 h-screen overflow-hidden bg-surface-container-lowest shadow-xl md:-ml-8 md:rounded-l-[2rem]">
@@ -48,12 +120,23 @@ const RegistrationForm = (props: Props) => {
           </div>
 
           <div className="min-h-0 flex-1">
-            <form className="space-y-2">
+            {isInvalid && (
+              <div className="w-full mb-6 flex items-center space-x-3 bg-red-50/80 px-4 py-3.5 rounded-xl border border-red-100">
+                <MdOutlineError className="text-red-600 text-[20px] font-bold" />
+                <span className="text-red-700 text-xs font-bold font-headline uppercase tracking-wider">
+                  {formError}
+                </span>
+              </div>
+            )}
+
+            <form className="space-y-3" id="register-form" onSubmit={handleSubmit}>
               <TextField
                 label="Full Name"
                 placeholder="John Doe"
                 type="text"
                 startIcon={<MdOutlinePerson className="text-[20px]" />}
+                value={fields?.fullName || ""}
+                onChange={updateField("fullName")}
               />
 
               <TextField
@@ -61,11 +144,16 @@ const RegistrationForm = (props: Props) => {
                 placeholder="johndoe@gmail.com"
                 type="email"
                 startIcon={<MdEmail className="text-[20px]" />}
+                value={fields?.email || ""}
+                onChange={updateField("email")}
               />
 
               <Select
                 label="Clinical Specialization"
                 options={specializations}
+                value={fields?.specialization || ""}
+                onChange={updateField("specialization")}
+                placeholder="Select specialization"
               />
 
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -84,6 +172,8 @@ const RegistrationForm = (props: Props) => {
                   endIconClick={() =>
                     setIsPasswordVisible((prev: boolean) => !prev)
                   }
+                  value={fields?.password || ""}
+                  onChange={updateField("password")}
                 />
 
                 <TextField
@@ -101,19 +191,29 @@ const RegistrationForm = (props: Props) => {
                   endIconClick={() =>
                     setIsConfirmPassVisible((prev: boolean) => !prev)
                   }
+                  value={fields?.confirmPass || ""}
+                  onChange={updateField("confirmPass")}
                 />
               </div>
 
-              <button
-                className="w-full signature-gradient text-on-primary py-4 rounded-xl font-headline font-bold text-sm tracking-wide hover:shadow-primary/35 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 mt-2 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
+              <Button
                 type="submit"
+                form="register-form"
+                fullWidth
+                loading={isLoading}
+                disabled={
+                  !fields?.fullName ||
+                  !fields?.email ||
+                  !fields?.specialization ||
+                  !fields?.password ||
+                  !fields?.confirmPass
+                }
               >
-                Sign Up
-              </button>
+                {isLoading ? "Creating Account..." : "Sign Up"}
+              </Button>
             </form>
-          </div>
 
-          <div className="mt-6 flex justify-center border-t border-surface-container pt-8 shrink-0">
+            <div className="mt-6 flex justify-center border-t border-surface-container pt-8 shrink-0">
             <p className="text-on-surface-variant/70 text-xs font-medium">
               Already have an account?
               <Link
@@ -124,6 +224,9 @@ const RegistrationForm = (props: Props) => {
               </Link>
             </p>
           </div>
+          </div>
+
+          
         </div>
       </div>
     </section>

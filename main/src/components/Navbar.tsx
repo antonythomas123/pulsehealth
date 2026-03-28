@@ -1,19 +1,25 @@
 import React from "react";
 import {
   MdNotifications,
-  MdAccountCircle,
+  MdLogout,
   MdOutlineMenu,
 } from "react-icons/md";
-import { useAppDispatch } from "../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../redux/hooks";
 import { toggleMobileSidebar } from "../redux/slices/responsiveUI";
+import { selectCurrentUser, signOutUser } from "auth/redux/auth";
 
 type Props = {};
 
 const Navbar = (props: Props) => {
   const dispatch = useAppDispatch();
+  const currentUser = useAppSelector(selectCurrentUser);
 
   const handleMenuClick = () => {
     dispatch(toggleMobileSidebar());
+  };
+
+  const handleSignOut = () => {
+    dispatch(signOutUser());
   };
 
   return (
@@ -28,12 +34,21 @@ const Navbar = (props: Props) => {
       </div>
 
       <div className="flex items-center gap-4">
+        <span className="hidden md:block text-sm text-slate-500">
+          {currentUser?.email ?? "Signed in"}
+        </span>
+
         <button className="p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors">
           <MdNotifications className="material-symbols-outlined" />
         </button>
 
-        <button className='"p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors'>
-          <MdAccountCircle className="material-symbols-outlined" />
+        <button
+          className="p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors"
+          onClick={handleSignOut}
+          title="Sign out"
+          type="button"
+        >
+          <MdLogout className="material-symbols-outlined" />
         </button>
       </div>
     </nav>

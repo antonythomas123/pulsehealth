@@ -81,7 +81,7 @@ const Select = ({
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex flex-col gap-1.5 min-w-50"
+      className="relative inline-flex flex-col gap-1.5 w-full"
     >
       <span className="text-[0.6875rem] font-label font-bold text-outline-variant px-1 tracking-widest select-none">
         {label}

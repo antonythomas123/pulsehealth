@@ -4,6 +4,7 @@
 @source "../../dashboard/src";
 @source "../../patients/src";
 @source "../../analytics/src";
+@source "../../auth/src/";
 
 @theme {
   --font-sans: "Manrope", sans-serif;
@@ -81,6 +82,14 @@
 
   .clinical-gradient {
     background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%);
+  }
+
+  .signature-gradient {
+    background: linear-gradient(135deg, #003d9b 0%, #0052cc 100%);
+  }
+
+  .brand-bg-solid {
+    background-color: #003d9b;
   }
 }
 
