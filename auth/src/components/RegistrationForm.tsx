@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdEmail,
   MdLock,
@@ -46,6 +46,11 @@ const RegistrationForm = (props: Props) => {
   const isLoading = useAppSelector(selectAuthLoading);
   const formError = localError ?? authError;
   const isInvalid = Boolean(formError);
+
+  useEffect(() => {
+    setLocalError(null);
+    dispatch(clearAuthError());
+  }, [dispatch]);
 
   const clearErrorIfNeeded = () => {
     if (localError) {

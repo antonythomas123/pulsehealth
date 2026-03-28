@@ -4,6 +4,7 @@ declare module "auth/redux/auth" {
   const reducer: import("@reduxjs/toolkit").Reducer;
   export default reducer;
   export const clearAuthError: () => any;
+  export const initializeAuth: () => any;
   export const signInWithEmail: (payload: {
     email: string;
     password: string;
@@ -14,6 +15,7 @@ declare module "auth/redux/auth" {
     email: string | null;
     displayName: string | null;
   } | null;
+  export const selectAuthInitialized: (state: any) => boolean;
   export const selectIsAuthenticated: (state: any) => boolean;
   export const selectAuthLoading: (state: any) => boolean;
   export const selectAuthError: (state: any) => string | null;

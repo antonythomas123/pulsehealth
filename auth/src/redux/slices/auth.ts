@@ -14,6 +14,7 @@ import {
 type AuthState = {
   user: FirebaseUser | null;
   isAuthenticated: boolean;
+  initialized: boolean;
   loading: boolean;
   error: string | null;
 };
@@ -25,6 +26,7 @@ type RootStateWithAuth = {
 const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
+  initialized: false,
   loading: false,
   error: null,
 };
@@ -38,11 +40,13 @@ const authSlice = createSlice({
     setAuthState: (state, action: PayloadAction<FirebaseUser | null>) => {
       state.user = action.payload;
       state.isAuthenticated = Boolean(action.payload);
+      state.initialized = true;
       state.loading = false;
       state.error = null;
     },
     setAuthError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
+      state.initialized = true;
       state.loading = false;
     },
     clearAuthError: (state) => {
@@ -130,6 +134,8 @@ export const selectCurrentUser = (state: RootStateWithAuth) =>
   selectAuth(state)?.user ?? null;
 export const selectIsAuthenticated = (state: RootStateWithAuth) =>
   selectAuth(state)?.isAuthenticated ?? false;
+export const selectAuthInitialized = (state: RootStateWithAuth) =>
+  selectAuth(state)?.initialized ?? false;
 export const selectAuthLoading = (state: RootStateWithAuth) =>
   selectAuth(state)?.loading ?? false;
 export const selectAuthError = (state: RootStateWithAuth) =>

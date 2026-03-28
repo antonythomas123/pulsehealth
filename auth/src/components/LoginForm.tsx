@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   MdHealthAndSafety,
   MdOutlineError,
@@ -27,6 +27,10 @@ const LoginForm = (props: Props) => {
   const authError = useAppSelector(selectAuthError);
   const isLoading = useAppSelector(selectAuthLoading);
   const isInvalid = Boolean(authError);
+
+  useEffect(() => {
+    dispatch(clearAuthError());
+  }, [dispatch]);
 
   const clearErrorIfNeeded = () => {
     if (authError) {
