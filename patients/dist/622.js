@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpatients=self.webpackChunkpatients||[]).push([[622],{144(e,t,s){var n=s(848),a=s(338),r=s(432);a.createRoot(document.getElementById("root")).render((0,n.jsx)(e=>(0,n.jsx)(r.A,{}),{}))}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkpatients=self.webpackChunkpatients||[]).push([[577],{577(s,e,t){t.r(e),t.d(e,{default:()=>p});var a=t(848),n=t(432);const p=s=>(0,a.jsx)(n.A,{})}}]);
