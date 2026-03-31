@@ -18,6 +18,7 @@ import {
   selectAuthError,
   selectAuthLoading,
 } from "../redux/slices/auth";
+import { showLocalNotification } from "main/notifications";
 
 type Props = {};
 
@@ -96,13 +97,22 @@ const RegistrationForm = (props: Props) => {
       return;
     }
 
-    await dispatch(
+    const resultAction = await dispatch(
       registerWithEmail({
         fullName: normalizedFullName,
         email: normalizedEmail,
         password: fields.password,
       }),
     );
+
+    if (registerWithEmail.fulfilled.match(resultAction)) {
+      void showLocalNotification({
+        title: "Notifications are ready",
+        body: `Welcome to PulseHealth, ${resultAction.payload.displayName ?? "Clinician"}.`,
+        tag: "pulsehealth-auth-register",
+        url: "/dashboard",
+      });
+    }
   };
 
   return (

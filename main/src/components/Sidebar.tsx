@@ -86,12 +86,12 @@ const Sidebar = () => {
           </NavLink>
         ))}
 
-        <div className="mt-auto pb-4 px-4">
+        {/* <div className="mt-auto pb-4 px-4">
           <button className="w-full clinical-gradient text-white py-3 rounded-lg font-bold text-sm shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2 cursor-pointer">
             <MdAdd className="material-symbols-outlined text-sm" />
             New Record
           </button>
-        </div>
+        </div> */}
       </aside>
     </>
   );

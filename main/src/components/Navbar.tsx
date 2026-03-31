@@ -38,9 +38,9 @@ const Navbar = (props: Props) => {
           {currentUser?.email ?? "Signed in"}
         </span>
 
-        <button className="p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors">
+        {/* <button className="p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors">
           <MdNotifications className="material-symbols-outlined" />
-        </button>
+        </button> */}
 
         <button
           className="p-2 text-slate-500 hover:bg-slate-50 rounded-full active:scale-95 duration-150 transition-colors"

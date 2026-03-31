@@ -18,3 +18,12 @@ declare module "main/redux/storeRegistry" {
     ) => void;
   };
 }
+
+declare module "main/notifications" {
+  export const showLocalNotification: (payload: {
+    title: string;
+    body: string;
+    tag?: string;
+    url?: string;
+  }) => Promise<boolean>;
+}

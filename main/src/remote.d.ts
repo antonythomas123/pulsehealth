@@ -20,6 +20,28 @@ declare module "auth/redux/auth" {
   export const selectAuthLoading: (state: any) => boolean;
   export const selectAuthError: (state: any) => string | null;
 }
+declare module "main/notifications" {
+  export type InAppNotification = {
+    id: string;
+    title: string;
+    body: string;
+    tag?: string;
+    url?: string;
+    durationMs: number;
+    createdAt: number;
+  };
+  export const registerNotificationServiceWorker: () => Promise<ServiceWorkerRegistration | null>;
+  export const requestNotificationPermission: () => Promise<NotificationPermission>;
+  export const subscribeToNotifications: (
+    listener: (notification: InAppNotification) => void,
+  ) => () => void;
+  export const showLocalNotification: (payload: {
+    title: string;
+    body: string;
+    tag?: string;
+    url?: string;
+  }) => Promise<boolean>;
+}
 declare module "dashboard/Dashboard"
 declare module "patients/Patients"
 declare module "analytics/Analytics"

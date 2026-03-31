@@ -9,6 +9,7 @@ import {
 } from "react-icons/md";
 import { TextField, Button } from "main/components";
 import { useAppDispatch, useAppSelector } from "main/redux/hooks";
+import { showLocalNotification } from "main/notifications";
 import {
   clearAuthError,
   clearSessionMessage,
@@ -47,12 +48,26 @@ const LoginForm = (props: Props) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await dispatch(
+    const resultAction = await dispatch(
       signInWithEmail({
         email: email.trim(),
         password,
       }),
     );
+
+    if (signInWithEmail.fulfilled.match(resultAction)) {
+      const userName =
+        resultAction.payload.displayName ??
+        resultAction.payload.email ??
+        "Clinician";
+
+      void showLocalNotification({
+        title: "Welcome back to PulseHealth",
+        body: `${userName}, your workspace is ready.`,
+        tag: "pulsehealth-auth-login",
+        url: "/dashboard",
+      });
+    }
   };
 
   return (

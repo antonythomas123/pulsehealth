@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 import { initializeAuth } from "auth/redux/auth";
 import { store } from "./redux/store";
 import AppRoutes from "./Routes";
+import { NotificationToast } from "./components";
 import { storeRegistry } from "./redux/storeRegistry";
 
 import responsiveUIReducer from "./redux/slices/responsiveUI";
@@ -18,6 +19,7 @@ const App = () => {
     <Provider store={store}>
       <BrowserRouter>
         <AppRoutes />
+        <NotificationToast />
       </BrowserRouter>
     </Provider>
   );
