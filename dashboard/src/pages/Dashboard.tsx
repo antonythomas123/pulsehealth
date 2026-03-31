@@ -8,6 +8,8 @@ import {
   MdCalendarMonth,
   MdOutlinePerson,
 } from "react-icons/md";
+import { useAppSelector } from "main/redux/hooks";
+import { selectCurrentUser } from "auth/redux/auth";
 import RecentActivity from "../components/RecentActivity";
 import type { Record } from "../types/dashboard.types";
 import data from "../data/records.json";
@@ -20,16 +22,24 @@ const Dashboard = (props: Props) => {
   const [recentActivity, setRecentActivity] = React.useState<Record[]>(
     (data?.records as Record[]) || [],
   );
+  const currentUser = useAppSelector(selectCurrentUser);
+  const fullName = currentUser?.displayName?.trim() || "Doctor";
+  const today = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date());
 
   return (
     <div>
       <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="font-headline font-extrabold text-2xl text-on-surface tracking-tight mb-2">
-            Good Morning, Dr. Sarah
+            Good Morning, {fullName}
           </h1>
           <p className="font-label text-outline text-sm font-semibold uppercase tracking-widest">
-            Monday, October 23, 2023
+            {today}
           </p>
         </div>
 
