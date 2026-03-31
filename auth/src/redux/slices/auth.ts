@@ -1,7 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { onAuthStateChanged } from "firebase/auth";
+import { onIdTokenChanged, signOut } from "firebase/auth";
 import { storeRegistry } from "main/redux/storeRegistry";
 import { auth } from "../../configs/firebase.config";
+import {
+  clearAuthSession,
+  clearSessionExpiryTimer,
+  consumeSessionReasonMessage,
+  isSessionExpired,
+  loadAuthSessionMeta,
+  markSessionExpired,
+  persistAuthSession,
+  scheduleSessionExpiry,
+  SESSION_EXPIRED_MESSAGE,
+} from "../authSession";
 import {
   FirebaseUser,
   getAuthErrorMessage,
@@ -17,10 +28,16 @@ type AuthState = {
   initialized: boolean;
   loading: boolean;
   error: string | null;
+  sessionExpired: boolean;
+  sessionMessage: string | null;
 };
 
 type RootStateWithAuth = {
   auth?: AuthState;
+};
+
+type AuthPayload = {
+  user: FirebaseUser | null;
 };
 
 const initialState: AuthState = {
@@ -29,6 +46,8 @@ const initialState: AuthState = {
   initialized: false,
   loading: false,
   error: null,
+  sessionExpired: false,
+  sessionMessage: null,
 };
 
 let authStateUnsubscribe: (() => void) | null = null;
@@ -37,12 +56,14 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setAuthState: (state, action: PayloadAction<FirebaseUser | null>) => {
-      state.user = action.payload;
-      state.isAuthenticated = Boolean(action.payload);
+    setAuthState: (state, action: PayloadAction<AuthPayload>) => {
+      state.user = action.payload.user;
+      state.isAuthenticated = Boolean(action.payload.user);
       state.initialized = true;
       state.loading = false;
       state.error = null;
+      state.sessionExpired = false;
+      state.sessionMessage = null;
     },
     setAuthError: (state, action: PayloadAction<string>) => {
       state.error = action.payload;
@@ -52,18 +73,35 @@ const authSlice = createSlice({
     clearAuthError: (state) => {
       state.error = null;
     },
+    clearSessionMessage: (state) => {
+      state.sessionExpired = false;
+      state.sessionMessage = null;
+    },
+    setSessionExpired: (state, action: PayloadAction<string>) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.initialized = true;
+      state.loading = false;
+      state.error = null;
+      state.sessionExpired = true;
+      state.sessionMessage = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(signInWithEmail.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.sessionExpired = false;
+        state.sessionMessage = null;
       })
       .addCase(signInWithEmail.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
+        state.sessionExpired = false;
+        state.sessionMessage = null;
       })
       .addCase(signInWithEmail.rejected, (state, action) => {
         state.loading = false;
@@ -72,12 +110,16 @@ const authSlice = createSlice({
       .addCase(registerWithEmail.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.sessionExpired = false;
+        state.sessionMessage = null;
       })
       .addCase(registerWithEmail.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isAuthenticated = true;
         state.loading = false;
         state.error = null;
+        state.sessionExpired = false;
+        state.sessionMessage = null;
       })
       .addCase(registerWithEmail.rejected, (state, action) => {
         state.loading = false;
@@ -92,6 +134,8 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.loading = false;
         state.error = null;
+        state.sessionExpired = false;
+        state.sessionMessage = null;
       })
       .addCase(signOutUser.rejected, (state, action) => {
         state.loading = false;
@@ -100,17 +144,78 @@ const authSlice = createSlice({
   },
 });
 
+export const expireSession =
+  () => async (dispatch: (action: unknown) => unknown) => {
+    clearSessionExpiryTimer();
+    markSessionExpired();
+    clearAuthSession(true);
+    dispatch(setSessionExpired(SESSION_EXPIRED_MESSAGE));
+
+    try {
+      await signOut(auth);
+    } catch {
+      // The local session has already been cleared. Keep the expiry UX intact.
+    }
+  };
+
 export const initializeAuth = () => (dispatch: (action: unknown) => unknown) => {
   if (authStateUnsubscribe) {
     return authStateUnsubscribe;
   }
 
-  authStateUnsubscribe = onAuthStateChanged(
+  authStateUnsubscribe = onIdTokenChanged(
     auth,
-    (user) => {
-      dispatch(setAuthState(user ? toFirebaseUser(user) : null));
+    async (user) => {
+      if (user) {
+        const existingSession = loadAuthSessionMeta();
+
+        if (existingSession && isSessionExpired(existingSession.expiresAt)) {
+          markSessionExpired();
+          clearSessionExpiryTimer();
+          dispatch(setSessionExpired(SESSION_EXPIRED_MESSAGE));
+          await signOut(auth);
+          return;
+        }
+
+        try {
+          const sessionMeta = await persistAuthSession(user);
+          scheduleSessionExpiry(sessionMeta.expiresAt, () => {
+            dispatch(expireSession());
+          });
+
+          dispatch(
+            setAuthState({
+              user: toFirebaseUser(user),
+            }),
+          );
+        } catch (error) {
+          clearSessionExpiryTimer();
+          clearAuthSession();
+          dispatch(setAuthError(getAuthErrorMessage(error)));
+        }
+
+        return;
+      }
+
+      clearSessionExpiryTimer();
+
+      const sessionReasonMessage = consumeSessionReasonMessage();
+      clearAuthSession();
+
+      if (sessionReasonMessage) {
+        dispatch(setSessionExpired(sessionReasonMessage));
+        return;
+      }
+
+      dispatch(
+        setAuthState({
+          user: null,
+        }),
+      );
     },
     (error) => {
+      clearSessionExpiryTimer();
+      clearAuthSession();
       dispatch(setAuthError(getAuthErrorMessage(error)));
     },
   );
@@ -123,9 +228,17 @@ export const stopAuthInitialization = () => () => {
     authStateUnsubscribe();
     authStateUnsubscribe = null;
   }
+
+  clearSessionExpiryTimer();
 };
 
-export const { setAuthState, setAuthError, clearAuthError } = authSlice.actions;
+export const {
+  setAuthState,
+  setAuthError,
+  clearAuthError,
+  clearSessionMessage,
+  setSessionExpired,
+} = authSlice.actions;
 
 export { registerWithEmail, signInWithEmail, signOutUser } from "../thunks/auth";
 
@@ -140,6 +253,10 @@ export const selectAuthLoading = (state: RootStateWithAuth) =>
   selectAuth(state)?.loading ?? false;
 export const selectAuthError = (state: RootStateWithAuth) =>
   selectAuth(state)?.error ?? null;
+export const selectSessionExpired = (state: RootStateWithAuth) =>
+  selectAuth(state)?.sessionExpired ?? false;
+export const selectSessionMessage = (state: RootStateWithAuth) =>
+  selectAuth(state)?.sessionMessage ?? null;
 
 storeRegistry.registerModule("auth", authSlice.reducer);
 

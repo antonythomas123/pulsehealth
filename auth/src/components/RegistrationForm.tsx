@@ -13,6 +13,7 @@ import { useAppDispatch, useAppSelector } from "main/redux/hooks";
 import { Link } from "react-router-dom";
 import {
   clearAuthError,
+  clearSessionMessage,
   registerWithEmail,
   selectAuthError,
   selectAuthLoading,
@@ -50,6 +51,7 @@ const RegistrationForm = (props: Props) => {
   useEffect(() => {
     setLocalError(null);
     dispatch(clearAuthError());
+    dispatch(clearSessionMessage());
   }, [dispatch]);
 
   const clearErrorIfNeeded = () => {

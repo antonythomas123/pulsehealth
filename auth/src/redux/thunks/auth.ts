@@ -7,6 +7,7 @@ import {
   User,
 } from "firebase/auth";
 import { auth } from "../../configs/firebase.config";
+import { persistAuthSessionFromCredential } from "../authSession";
 
 export type FirebaseUser = {
   uid: string;
@@ -65,6 +66,7 @@ export const signInWithEmail = createAsyncThunk<
 >("auth/signInWithEmail", async ({ email, password }, thunkAPI) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    persistAuthSessionFromCredential(userCredential);
     return toFirebaseUser(userCredential.user);
   } catch (error) {
     return thunkAPI.rejectWithValue(getAuthErrorMessage(error));
@@ -86,6 +88,8 @@ export const registerWithEmail = createAsyncThunk<
     await updateProfile(userCredential.user, {
       displayName: fullName,
     });
+
+    persistAuthSessionFromCredential(userCredential);
 
     return {
       uid: userCredential.user.uid,

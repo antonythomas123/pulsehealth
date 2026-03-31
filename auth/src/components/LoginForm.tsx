@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   MdHealthAndSafety,
   MdOutlineError,
@@ -11,8 +11,11 @@ import { TextField, Button } from "main/components";
 import { useAppDispatch, useAppSelector } from "main/redux/hooks";
 import {
   clearAuthError,
+  clearSessionMessage,
   selectAuthError,
   selectAuthLoading,
+  selectSessionExpired,
+  selectSessionMessage,
   signInWithEmail,
 } from "../redux/slices/auth";
 import { Link } from "react-router-dom";
@@ -25,16 +28,19 @@ const LoginForm = (props: Props) => {
   const [password, setPassword] = useState<string>("");
   const dispatch = useAppDispatch();
   const authError = useAppSelector(selectAuthError);
+  const sessionMessage = useAppSelector(selectSessionMessage);
+  const sessionExpired = useAppSelector(selectSessionExpired);
   const isLoading = useAppSelector(selectAuthLoading);
-  const isInvalid = Boolean(authError);
-
-  useEffect(() => {
-    dispatch(clearAuthError());
-  }, [dispatch]);
+  const feedbackMessage = sessionMessage ?? authError;
+  const isInvalid = Boolean(feedbackMessage);
 
   const clearErrorIfNeeded = () => {
     if (authError) {
       dispatch(clearAuthError());
+    }
+
+    if (sessionMessage) {
+      dispatch(clearSessionMessage());
     }
   };
 
@@ -70,11 +76,25 @@ const LoginForm = (props: Props) => {
         </header>
 
         {isInvalid && (
-          <div className="w-full mb-8 flex items-center space-x-3 bg-red-50/80 px-4 py-3.5 rounded-xl border border-red-100">
-            <MdOutlineError className="text-red-600 text-[20px] font-bold" />
+          <div
+            className={`w-full mb-8 flex items-center space-x-3 px-4 py-3.5 rounded-xl border ${
+              sessionExpired
+                ? "bg-amber-50 border-amber-100"
+                : "bg-red-50/80 border-red-100"
+            }`}
+          >
+            <MdOutlineError
+              className={`text-[20px] font-bold ${
+                sessionExpired ? "text-amber-600" : "text-red-600"
+              }`}
+            />
 
-            <span className="text-red-700 text-xs font-bold font-headline uppercase tracking-wider">
-              {authError}
+            <span
+              className={`text-xs font-bold font-headline uppercase tracking-wider ${
+                sessionExpired ? "text-amber-700" : "text-red-700"
+              }`}
+            >
+              {feedbackMessage}
             </span>
           </div>
         )}
