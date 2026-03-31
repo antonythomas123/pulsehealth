@@ -1,9 +1,14 @@
 import React from "react";
+import Dashboard from "./pages/Dashboard";
 
 type Props = {};
 
 const App = (props: Props) => {
-  return <div>App</div>;
+  return (
+    <div>
+      <Dashboard />
+    </div>
+  );
 };
 
 export default App;

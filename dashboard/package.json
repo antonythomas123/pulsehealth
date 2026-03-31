@@ -14,13 +14,16 @@
   "license": "ISC",
   "dependencies": {
     "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "react-dom": "^19.2.4",
+    "react-icons": "^5.6.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.2.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "autoprefixer": "^10.4.27",
     "css-loader": "^7.1.4",
+    "dotenv": "^17.3.1",
     "html-webpack-plugin": "^5.6.6",
     "postcss": "^8.5.8",
     "postcss-loader": "^8.2.1",

@@ -1,5 +1,17 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ModuleFederationPlugin } = require("webpack").container;
+const path = require("path");
+const webpack = require("webpack");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+const { ModuleFederationPlugin } = webpack.container;
+const envKeys = Object.keys(process.env)
+  .filter((key) => key.startsWith("REACT_APP_"))
+  .reduce((acc, key) => {
+    acc[`process.env.${key}`] = JSON.stringify(process.env[key]);
+    return acc;
+  }, {});
 
 module.exports = {
   entry: "./src/index.ts",
@@ -37,20 +49,27 @@ module.exports = {
       name: "dashboard",
       filename: "remoteEntry.js",
 
+      remotes: {
+        main: `main@${process.env.REACT_APP_MAIN_REMOTE_URL}`,
+        auth: `auth@${process.env.REACT_APP_AUTH_REMOTE_URL}`,
+      },
+
       exposes: {
-        // "./Dashboard": "./src/pages/Dashboard",
+        "./Dashboard": "./src/App.tsx",
       },
 
       shared: {
         react: { singleton: true },
         "react-dom": { singleton: true },
-        "react-redux": { singleton: true },
-        "@reduxjs/toolkit": { singleton: true },
+        "react-redux": { singleton: true, requiredVersion: "^9.2.0" },
+        "@reduxjs/toolkit": { singleton: true, requiredVersion: "^2.11.2" },
       },
     }),
 
     new HtmlWebpackPlugin({
       template: "./public/index.html",
     }),
+
+    new webpack.DefinePlugin(envKeys),
   ],
 };

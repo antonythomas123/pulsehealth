@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkanalytics=self.webpackChunkanalytics||[]).push([[577],{8577(s,a,c){c.r(a),c.d(a,{default:()=>n});var e=c(4848),l=c(5203);const n=()=>(0,e.jsx)("div",{children:(0,e.jsx)(l.A,{})})}}]);
