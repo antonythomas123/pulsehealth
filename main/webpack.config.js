@@ -1,8 +1,18 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ModuleFederationPlugin } = require("webpack").container;
 const path = require("path");
 const fs = require("fs");
-const Dotenv = require("dotenv-webpack");
+const webpack = require("webpack");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+const { ModuleFederationPlugin } = webpack.container;
+const envKeys = Object.keys(process.env)
+  .filter((key) => key.startsWith("REACT_APP_"))
+  .reduce((acc, key) => {
+    acc[`process.env.${key}`] = JSON.stringify(process.env[key]);
+    return acc;
+  }, {});
 
 class CopyPublicAssetPlugin {
   constructor(assets) {
@@ -66,10 +76,10 @@ module.exports = {
       filename: "remoteEntry.js",
 
       remotes: {
-        auth: "auth@http://localhost:3001/remoteEntry.js",
-        dashboard: "dashboard@http://localhost:3002/remoteEntry.js",
-        patients: "patients@http://localhost:3003/remoteEntry.js",
-        analytics: "analytics@http://localhost:3004/remoteEntry.js",
+        auth: `auth@${process.env.REACT_APP_AUTH_REMOTE_URL}`,
+        dashboard: `dashboard@${process.env.REACT_APP_DASHBOARD_REMOTE_URL}`,
+        patients: `patients@${process.env.REACT_APP_PATIENTS_REMOTE_URL}`,
+        analytics: `analytics@${process.env.REACT_APP_ANALYTICS_REMOTE_URL}`,
       },
 
       exposes: {
@@ -93,7 +103,7 @@ module.exports = {
       template: "./public/index.html",
     }),
 
-    new Dotenv(),
+    new webpack.DefinePlugin(envKeys),
     new CopyPublicAssetPlugin([{ from: "./public/sw.js", to: "sw.js" }]),
   ],
 };

@@ -1,6 +1,17 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { ModuleFederationPlugin } = require("webpack").container;
-const Dotenv = require("dotenv-webpack");
+const path = require("path");
+const webpack = require("webpack");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+const { ModuleFederationPlugin } = webpack.container;
+const envKeys = Object.keys(process.env)
+  .filter((key) => key.startsWith("REACT_APP_"))
+  .reduce((acc, key) => {
+    acc[`process.env.${key}`] = JSON.stringify(process.env[key]);
+    return acc;
+  }, {});
 
 module.exports = {
   entry: "./src/index.ts",
@@ -39,7 +50,7 @@ module.exports = {
       filename: "remoteEntry.js",
 
       remotes: {
-        main: "main@http://localhost:3000/remoteEntry.js",
+        main: `main@${process.env.REACT_APP_MAIN_REMOTE_URL}`,
       },
 
       exposes: {
@@ -61,6 +72,6 @@ module.exports = {
       template: "./public/index.html",
     }),
 
-    new Dotenv(),
+    new webpack.DefinePlugin(envKeys),
   ],
 };
